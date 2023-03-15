@@ -59,4 +59,22 @@ if (authPage) {
         console.log("Alterou o hash");
         authHash();
     });
+    const formAuthEmail = document.querySelector("#auth-email");
+    if (formAuthEmail) {
+        formAuthEmail.addEventListener("submit", (e) => {
+            e.preventDefault();
+            try {
+                const form = e.target;
+                const button = form.querySelector("[type=submit]");
+                const { value } = form.querySelector("[type=email]");
+                button.disabled = true;
+                sessionStorage.setItem("email", value);
+                location.hash = "#login";
+                button.disabled = false;
+            }
+            catch (e) {
+                console.warn("Houve um problema ao enviar o formulário");
+            }
+        });
+    }
 }
