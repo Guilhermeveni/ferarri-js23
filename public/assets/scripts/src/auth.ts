@@ -1,4 +1,4 @@
-import queryStringToJSON from "./utils/queryStringToJSON.js";
+import queryStringToJSON from "./utils/queryStringToJSON";
 
 const authPage = document.querySelector("main#auth");
 if (authPage) {

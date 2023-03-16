@@ -1,4 +1,4 @@
-import { fnCloseMenu } from "./utils/function.js";
+import { fnCloseMenu } from "./utils/function";
 
 const title = "Bem vindo ao curso de JavaScript + TypeScript";
 
