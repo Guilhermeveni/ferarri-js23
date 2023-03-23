@@ -1,11 +1,13 @@
 import {
   addDays,
+  addMonths,
   differenceInSeconds,
   endOfMonth,
   endOfWeek,
   format,
   startOfMonth,
   startOfWeek,
+  subMonths,
 } from "date-fns";
 import locale from "date-fns/locale/pt-BR";
 const page = document.querySelector("#schedules-new");
@@ -41,14 +43,45 @@ if (page) {
       if (format(currentDay, "yyyyMM") > format(beginOfMonth, "yyyyMM")) {
         li.classList.add("month-next");
       }
-      if (format(currentDay, "yyyyMM") === format(today, "yyyyMM")) {
+      if (format(currentDay, "yyyyMMdd") === format(today, "yyyyMMdd")) {
         li.classList.add("active");
       }
+
+      li.addEventListener("click", (e: Event) => {
+        const selected = calendar.querySelector(".selected");
+
+        if (selected) {
+          selected.classList.remove("selected");
+        }
+
+        const myLi = e.target as HTMLLIElement;
+        myLi.classList.add("selected");
+
+        const scheduleAt = document.querySelector(
+          "[name=schedule_at]"
+        ) as HTMLInputElement;
+        scheduleAt.value = myLi.dataset.schedule ?? "";
+      });
 
       calendar.appendChild(li);
       currentDay = addDays(currentDay, 1);
     }
   };
+
+  btnNext.addEventListener("click", () => {
+    beginOfMonth = addMonths(beginOfMonth, 1);
+    render();
+  });
+
+  btnPrev.addEventListener("click", () => {
+    beginOfMonth = subMonths(beginOfMonth, 1);
+    render();
+  });
+
+  btnToday.addEventListener("click", () => {
+    beginOfMonth = startOfMonth(today);
+    render();
+  });
 
   render();
 }
