@@ -1,15 +1,15 @@
-import queryStringToJSON from "./functions/queryStringToJSON";
-import setFormValues from "./functions/setFormValues";
-import { HTMLInputField } from "./types/HTMLInputField";
 import IMask from "imask";
+import { queryStringToJSON } from "./functions/queryStringToJSON";
+
 const page = document.querySelector("#schedules-payment") as HTMLElement;
 
 if (page) {
-  const form = page.querySelector("form") as HTMLFormElement;
-  const name = page.querySelector("#name") as HTMLInputField;
-  const number = page.querySelector("#number") as HTMLInputField;
-  const expiry = page.querySelector("#expiry") as HTMLInputField;
-  const inputCvv = page.querySelector("#cvv") as HTMLInputField;
+  queryStringToJSON();
+
+  const name = page.querySelector("#name") as HTMLInputElement;
+  const number = page.querySelector("#number") as HTMLInputElement;
+  const expiry = page.querySelector("#expiry") as HTMLInputElement;
+  const cvv = page.querySelector("#cvv") as HTMLInputElement;
   const creditCard = page.querySelector("#credit-card") as HTMLDivElement;
 
   const svgName = page.querySelector("svg .name") as SVGTSpanElement;
@@ -17,17 +17,14 @@ if (page) {
   const svgNumber2 = page.querySelector("svg .number-2") as SVGTSpanElement;
   const svgNumber3 = page.querySelector("svg .number-3") as SVGTSpanElement;
   const svgNumber4 = page.querySelector("svg .number-4") as SVGTSpanElement;
-
   const svgExpiry = page.querySelector("svg .expiry") as SVGTSpanElement;
   const svgCvv = page.querySelector("svg .cvv") as SVGTSpanElement;
 
-  setFormValues(form, queryStringToJSON());
-
-  name.addEventListener("keyup", (e) => {
+  name.addEventListener("keyup", () => {
     svgName.innerHTML = name.value.toUpperCase();
   });
 
-  number.addEventListener("keyup", (e) => {
+  number.addEventListener("keyup", () => {
     const numberString = number.value.replaceAll(" ", "");
 
     svgNumber1.innerHTML = numberString.substring(0, 4);
@@ -36,21 +33,19 @@ if (page) {
     svgNumber4.innerHTML = numberString.substring(12, 16);
   });
 
-  expiry.addEventListener("keyup", (e) => {
+  expiry.addEventListener("keyup", () => {
     svgExpiry.innerHTML = expiry.value;
   });
 
-  inputCvv.addEventListener("keyup", (e) => {
-    svgCvv.innerHTML = inputCvv.value;
+  cvv.addEventListener("keyup", () => {
+    svgCvv.innerHTML = cvv.value;
   });
 
-  creditCard.addEventListener("click", (e) => {
+  cvv.addEventListener("focus", () => {
     creditCard.classList.toggle("flipped");
   });
-  inputCvv.addEventListener("focus", (e) => {
-    creditCard.classList.toggle("flipped");
-  });
-  inputCvv.addEventListener("blur", (e) => {
+
+  cvv.addEventListener("blur", () => {
     creditCard.classList.toggle("flipped");
   });
 
@@ -65,8 +60,8 @@ if (page) {
     blocks: {
       YY: {
         mask: IMask.MaskedRange,
-        from: year.toString().substring(2, 4),
-        to: (year + 10).toString().substring(2, 4),
+        from: String(year).substring(2, 4),
+        to: String(year + 10).substring(2, 4),
       },
       MM: {
         mask: IMask.MaskedRange,
@@ -76,19 +71,7 @@ if (page) {
     },
   });
 
-  IMask(inputCvv, {
+  IMask(cvv, {
     mask: "000[0]",
-  });
-
-  page.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("focus", (e) => {
-      page.classList.add("keyboard-open");
-    });
-  });
-
-  page.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("blur", (e) => {
-      page.classList.remove("keyboard-open");
-    });
   });
 }

@@ -25,6 +25,8 @@
   "dependencies": {
     "date-fns": "^2.29.3",
     "firebase": "^9.17.2",
+    "Imask": "^6.4.3",
+    "uuid": "^9.0.0",
     "webpack": "^5.76.3"
   }
 }
