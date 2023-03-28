@@ -1,5 +1,5 @@
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from 'uuid';
+//import { v4 as uuidv4 } from 'uuid';
 import { getAuth, updateProfile, onAuthStateChanged } from "firebase/auth";
 
 const auth = getAuth();
