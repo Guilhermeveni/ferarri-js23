@@ -4,7 +4,7 @@ import {
   confirmPasswordReset,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import queryStringToJSON from "./functions/queryStringToJSON";
+import queryStringToJSON from "./utils/queryStringToJSON";
 
 const auth = getAuth();
 const form = document.querySelector<HTMLFormElement>("form#reset");

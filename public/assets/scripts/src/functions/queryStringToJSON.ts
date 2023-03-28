@@ -1,29 +1,37 @@
 import { AnyObject } from "../types/anyObject";
 
-export default function queryStringToJSON() {
+const splitQueryString = (queryString: string, values: AnyObject) => {
+  queryString
+    .split("?")[1]
+    .split("&")
+    .forEach((item) => {
+      const keyAndValue = item.split("=");
+      const key = keyAndValue[0];
+      const value = keyAndValue[1];
+
+      if (values[key]) {
+        if (values[key] instanceof Array) {
+          values[key].push(value);
+        } else {
+          values[key] = [values[key], value];
+        }
+      } else {
+        values[key] = value;
+      }
+    });
+
+  return values;
+};
+
+export const queryStringToJSON = () => {
   let values = {} as AnyObject;
   const queryString = location.search;
 
   if (queryString) {
-    queryString
-      .split("?")[1]
-      .split("&")
-      .forEach((item) => {
-        const nameAndValue = item.split("=");
-        const name = nameAndValue[0];
-        const value = nameAndValue[1];
-
-        if (values[name]) {
-          if (values[name] instanceof Array) {
-            values[name].push(value);
-          } else {
-            values[name] = [values[name], value];
-          }
-        } else {
-          values[name] = value;
-        }
-      });
+    values = splitQueryString(queryString, values);
+  } else if (location.hash) {
+    values = splitQueryString(location.hash, values);
   }
 
   return values;
-}
+};

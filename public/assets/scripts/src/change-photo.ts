@@ -1,5 +1,5 @@
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 import { getAuth, updateProfile, onAuthStateChanged } from "firebase/auth";
 
 const auth = getAuth();
@@ -7,78 +7,107 @@ const page = document.querySelector("#change-photo") as HTMLElement;
 const storage = getStorage();
 
 if (page) {
-  const form = page.querySelector("form") as HTMLFormElement;
-  const imgPreview = page.querySelector("#photo-preview") as HTMLImageElement;
-  const inputFile = page.querySelector("#file") as HTMLInputElement;
-  const buttonChoose = page.querySelector(".choose-photo") as HTMLButtonElement;
 
-  onAuthStateChanged(auth, () => {
-    if (!auth.currentUser) {
-      location.href = "/";
-    } else {
-      imgPreview.src = auth.currentUser.photoURL ?? "assets/images/user@4x.png";
-    }
-  });
+    const form = page.querySelector("form") as HTMLFormElement;
+    const imgPreview = page.querySelector("#photo-preview") as HTMLImageElement;
+    const inputFile = page.querySelector("#file") as HTMLInputElement;
+    const buttonChoose = page.querySelector(".choose-photo") as HTMLButtonElement;
 
-  buttonChoose.addEventListener("click", () => {
-    inputFile.click();
-  });
+    onAuthStateChanged(auth, () => {
 
-  inputFile.addEventListener("change", () => {
-    if (inputFile.files?.length) {
-      const file = inputFile.files[0];
+        if (!auth.currentUser) {
+    
+            location.href = "/";
+        
+        } else {
 
-      const reader = new FileReader();
+            imgPreview.src = auth.currentUser.photoURL ?? "assets/images/user@4x.png";
 
-      buttonChoose.disabled = true;
-
-      reader.onload = () => {
-        buttonChoose.disabled = false;
-
-        if (reader.result) {
-          imgPreview.src = reader.result as string;
         }
-      };
+    
+    });
 
-      reader.readAsDataURL(file);
-    }
-  });
+    buttonChoose.addEventListener("click", () => {
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+        inputFile.click();
 
-    const button = form.querySelector("[type=submit]") as HTMLButtonElement;
+    });
 
-    if (inputFile.files?.length) {
-      const file = inputFile.files[0];
+    inputFile.addEventListener("change", () => {
 
-      const ext = file.type.split("/")[1];
+        if (inputFile.files?.length) {
 
-      const fileRef = ref(storage, `photos/${uuidv4()}.${ext}`);
+            const file = inputFile.files[0];
 
-      button.disabled = true;
+            const reader = new FileReader();
 
-      uploadBytes(fileRef, file)
-        .then((snapshot) => {
-          getDownloadURL(fileRef).then((url) => {
-            button.disabled = false;
+            buttonChoose.disabled = true;
 
-            if (auth.currentUser) {
-              updateProfile(auth.currentUser, {
-                photoURL: url,
-              });
+            reader.onload = () => {
 
-              const photoEl = document.querySelector(
-                "#header > div.menu > div > div > picture > a > img"
-              ) as HTMLImageElement;
+                buttonChoose.disabled = false;
 
-              photoEl.src = url;
+                if (reader.result) {
+
+                    imgPreview.src = reader.result as string;
+
+                }
+
             }
-          });
-        })
-        .catch((error) => {
-          console.error(error.message);
-        });
-    }
-  });
+
+            reader.readAsDataURL(file);
+
+        }
+
+    });
+
+    form.addEventListener("submit", e => {
+
+        e.preventDefault();
+
+        const button = form.querySelector("[type=submit]") as HTMLButtonElement;
+
+        if (inputFile.files?.length) {
+
+            const file = inputFile.files[0];
+
+            const ext = file.type.split("/")[1];
+
+            const fileRef = ref(storage, `photos/${uuidv4()}.${ext}`);
+
+
+            button.disabled = true;
+
+           uploadBytes(fileRef, file).then(snapshot => {
+
+            getDownloadURL(fileRef).then(url => {
+
+                button.disabled = false;
+
+                if (auth.currentUser) {
+                    updateProfile(auth.currentUser, {
+                        photoURL: url
+                    });
+
+                    const photoEl = document.querySelector("#header > div.menu > div > div > picture > a > img") as HTMLImageElement;
+
+                    photoEl.src = url;
+
+                }
+
+            });
+
+           }).catch(error => {
+
+            console.error(error.message);
+
+           });
+
+        }
+
+
+        
+
+    });
+
 }
